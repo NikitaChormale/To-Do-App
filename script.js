@@ -1,49 +1,47 @@
-let todolist=[];
+let todolist = [];
 
-       
-       const  Add = () => {
-            const inputElenment=document.getElementById("input-todo");
-            todolist.push(inputElenment.value);
-            inputElenment.value= "";
-            localStorage.setItem("todolist",JSON.stringify(todolist));
+const Add = () => {
+  const inputElement = document.getElementById("input-todo");
+  const value = inputElement.value.trim();
 
-            randortodolist();
+  // ---- Prevent adding empty values ----
+  if (value === "") {
+    alert("Please enter a task before adding.");
+    return;
+  }
 
-        };
-        const randortodolist= () => {
-            const toDOLocalStorage = JSON.parse(
-                localStorage.getItem("todolist") || "[]"
-            );
+  todolist.push(value);
+  inputElement.value = "";
 
-            todolist = toDOLocalStorage;
-            
+  localStorage.setItem("todolist", JSON.stringify(todolist));
+  renderToDoList();
+};
 
-           const listcontainer=document.getElementById(`list-container`);
-           listcontainer.innerHTML="";
+const renderToDoList = () => {
+  const toDOLocalStorage = JSON.parse(localStorage.getItem("todolist") || "[]");
+  todolist = toDOLocalStorage;
 
-           for(const todoitem of todolist)
-           {
-            listcontainer.innerHTML += `<div class="todo-item" onclick="deleteToDo('${todoitem}')" >
-                ${todoitem }
-                <img src = " cross.jpg" class = delete-icon />
-                </div>
+  const listcontainer = document.getElementById("list-container");
+  listcontainer.innerHTML = "";
 
-                `}
+  for (const todoitem of todolist) {
+    listcontainer.innerHTML += `
+      <div class="todo-item" onclick="deleteToDo('${todoitem}')">
+        ${todoitem}
+        <img src="cross.jpg" class="delete-icon" />
+      </div>
+    `;
+  }
+};
 
+renderToDoList();
 
-        };
-        randortodolist();
-        const deleteToDo = (task) => {
+const deleteToDo = (task) => {
+  const index = todolist.indexOf(task);
 
-            const indesOfItem = todolist.indexOf(task);
-             
-            if (indesOfItem > -1){
-                todolist.splice(indesOfItem, 1);
-
-                localStorage.setItem("todolist" , JSON.stringify(todolist));
-                
-                 randortodolist();
-            }
-        }
-        
-        
+  if (index > -1) {
+    todolist.splice(index, 1);
+    localStorage.setItem("todolist", JSON.stringify(todolist));
+    renderToDoList();
+  }
+};
